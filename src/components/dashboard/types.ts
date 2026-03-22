@@ -16,26 +16,30 @@ export interface ChartCardProps {
   className?: string;
 }
 
+export interface BarDef {
+  dataKey: string;
+  label: string;
+  color: string;
+}
+
 export interface BarChartViewProps {
   data: Record<string, string | number>[];
   xKey: string;
-  bars: {
-    dataKey: string;
-    label: string;
-    color: string;
-  }[];
+  bars: BarDef[];
   yFormatter?: (value: number) => string;
   height?: number;
+}
+
+export interface LineDef {
+  dataKey: string;
+  label: string;
+  color: string;
 }
 
 export interface LineChartViewProps {
   data: Record<string, string | number>[];
   xKey: string;
-  lines: {
-    dataKey: string;
-    label: string;
-    color: string;
-  }[];
+  lines: LineDef[];
   yFormatter?: (value: number) => string;
   height?: number;
 }

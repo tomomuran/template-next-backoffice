@@ -6,6 +6,7 @@ import {
   getTimeSlots,
   getEventsForDate,
   resolveOverlappingEvents,
+  calculateEventPosition,
   isToday,
   format,
   jaLocale,
@@ -33,6 +34,7 @@ export function CalendarTimeGrid({
   colorMap,
   onSlotClick,
   onEventClick,
+  renderTimeEvent,
 }: CalendarTimeGridProps) {
   const slots = useMemo(() => getTimeSlots(dates[0], timeRange, slotDuration), [dates, timeRange, slotDuration]);
 
@@ -123,17 +125,28 @@ export function CalendarTimeGrid({
           <div />
           {dates.map((date, di) => (
             <div key={date.toISOString()} className="relative pointer-events-auto">
-              {eventsByDate[di].map(({ event, column, totalColumns }) => (
-                <CalendarTimeEvent
-                  key={event.id}
-                  event={event}
-                  timeRange={timeRange}
-                  colorMap={colorMap}
-                  column={column}
-                  totalColumns={totalColumns}
-                  onClick={onEventClick}
-                />
-              ))}
+              {eventsByDate[di].map(({ event, column, totalColumns }) =>
+                renderTimeEvent ? (
+                  <div key={event.id} className="absolute z-10" style={{
+                    top: `${calculateEventPosition(event, timeRange).top}%`,
+                    height: `${calculateEventPosition(event, timeRange).height}%`,
+                    width: `calc(${100 / totalColumns}% - 2px)`,
+                    left: `calc(${(column / totalColumns) * 100}% + 1px)`,
+                  }}>
+                    {renderTimeEvent(event)}
+                  </div>
+                ) : (
+                  <CalendarTimeEvent
+                    key={event.id}
+                    event={event}
+                    timeRange={timeRange}
+                    colorMap={colorMap}
+                    column={column}
+                    totalColumns={totalColumns}
+                    onClick={onEventClick}
+                  />
+                )
+              )}
             </div>
           ))}
         </div>

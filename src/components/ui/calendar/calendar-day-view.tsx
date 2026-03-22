@@ -24,6 +24,7 @@ export function CalendarDayView({
   colorMap,
   onSlotClick,
   onEventClick,
+  renderTimeEvent,
 }: CalendarDayViewProps) {
   const days = useMemo(() => [currentDate], [currentDate]);
 
@@ -36,6 +37,7 @@ export function CalendarDayView({
       colorMap={colorMap}
       onSlotClick={onSlotClick}
       onEventClick={onEventClick}
+      renderTimeEvent={renderTimeEvent}
     />
   );
 }

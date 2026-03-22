@@ -1,9 +1,10 @@
 import { execSync } from "node:child_process";
 import { copyFileSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { ports, urls, slot } from "../port-config.mjs";
 
-const projectRoot = resolve(dirname(new URL(import.meta.url).pathname), "../..");
+const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const baseConfig = resolve(projectRoot, "supabase/config.toml");
 const runtimeDir = resolve(projectRoot, `.supabase-runtime/slot-${slot}/supabase`);
 const runtimeConfig = resolve(runtimeDir, "config.toml");
@@ -91,29 +92,35 @@ function generateRuntimeConfig() {
   console.log(`  Analytics:${ports.supabaseAnalytics}`);
 }
 
-const command = process.argv[2];
-if (!command) {
-  console.error("Usage: node scripts/supabase/cli.mjs <start|stop|status|db-reset>");
-  process.exit(1);
+export function resolveSupabaseCommand(commandName, workdirFlag) {
+  if (commandName === "db-lint") {
+    return `supabase ${workdirFlag} db lint`;
+  }
+
+  if (commandName === "db-reset") {
+    return `supabase ${workdirFlag} db reset`;
+  }
+
+  return `supabase ${workdirFlag} ${commandName}`;
 }
 
-generateRuntimeConfig();
+const isDirectExecution = process.argv[1] ? resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url)) : false;
 
-const workdir = runtimeWorkdir;
-const migrationsFlag = `--workdir ${workdir}`;
-
-try {
-  if (command === "start") {
-    execSync(`supabase ${migrationsFlag} start`, { stdio: "inherit" });
-  } else if (command === "stop") {
-    execSync(`supabase ${migrationsFlag} stop`, { stdio: "inherit" });
-  } else if (command === "status") {
-    execSync(`supabase ${migrationsFlag} status`, { stdio: "inherit" });
-  } else if (command === "db-reset") {
-    execSync(`supabase ${migrationsFlag} db reset`, { stdio: "inherit" });
-  } else {
-    execSync(`supabase ${migrationsFlag} ${command}`, { stdio: "inherit" });
+if (isDirectExecution) {
+  const command = process.argv[2];
+  if (!command) {
+    console.error("Usage: node scripts/supabase/cli.mjs <start|stop|status|db-reset>");
+    process.exit(1);
   }
-} catch {
-  process.exit(1);
+
+  generateRuntimeConfig();
+
+  const workdir = runtimeWorkdir;
+  const migrationsFlag = `--workdir ${workdir}`;
+
+  try {
+    execSync(resolveSupabaseCommand(command, migrationsFlag), { stdio: "inherit" });
+  } catch {
+    process.exit(1);
+  }
 }

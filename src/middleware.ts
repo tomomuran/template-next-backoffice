@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/proxy";
-import { createSupabaseMiddlewareClient } from "@/lib/supabase/middleware";
+import { applyResponseCookies, createSupabaseMiddlewareClient } from "@/lib/supabase/middleware";
 
 const protectedPrefixes = ["/dashboard", "/contacts"];
 
@@ -18,7 +18,8 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const redirectResponse = NextResponse.redirect(new URL("/login", request.url));
+    return applyResponseCookies(response, redirectResponse);
   }
 
   return response;

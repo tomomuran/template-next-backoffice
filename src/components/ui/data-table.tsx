@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useDeferredValue, useEffect, useId, useState } from "react";
-import { ArrowDownAZ, ArrowUpZA, ChevronLeft, ChevronRight, Download, Search } from "lucide-react";
+import { SortAscending, SortDescending, CaretLeft, CaretRight, DownloadSimple, MagnifyingGlass } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -118,7 +118,7 @@ export function DataTable<T>({
               {searchLabel}
             </label>
             <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <MagnifyingGlass className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 id={searchId}
                 className="pl-9"
@@ -175,7 +175,7 @@ export function DataTable<T>({
           </select>
 
           <Button type="button" variant="outline" onClick={downloadCsv}>
-            <Download className="mr-2 h-4 w-4" />
+            <DownloadSimple className="mr-2 h-4 w-4" />
             CSV Export
           </Button>
         </div>
@@ -203,9 +203,9 @@ export function DataTable<T>({
                             <span>{column.header}</span>
                             {isSorted ? (
                               sort?.direction === "asc" ? (
-                                <ArrowDownAZ className="h-4 w-4" />
+                                <SortAscending className="h-4 w-4" />
                               ) : (
-                                <ArrowUpZA className="h-4 w-4" />
+                                <SortDescending className="h-4 w-4" />
                               )
                             ) : null}
                           </button>
@@ -237,7 +237,7 @@ export function DataTable<T>({
             </p>
             <div className="flex items-center gap-2">
               <Button type="button" variant="outline" size="sm" onClick={() => setPage((current) => Math.max(current - 1, 1))} disabled={resolvedPage <= 1}>
-                <ChevronLeft className="mr-1 h-4 w-4" />
+                <CaretLeft className="mr-1 h-4 w-4" />
                 Prev
               </Button>
               <span>
@@ -251,7 +251,7 @@ export function DataTable<T>({
                 disabled={resolvedPage >= totalPages}
               >
                 Next
-                <ChevronRight className="ml-1 h-4 w-4" />
+                <CaretRight className="ml-1 h-4 w-4" />
               </Button>
             </div>
           </div>

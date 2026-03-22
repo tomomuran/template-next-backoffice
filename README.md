@@ -42,6 +42,8 @@ pnpm db:reset
 pnpm db:check
 ```
 
+`pnpm test:e2e` は `Supabase local` の起動確認と `pnpm db:reset` を先に実行し、Playwright 側で `pnpm dev` も自動起動します。手元で既存の DB 状態を保ったまま反復したい場合だけ、別ターミナルで `pnpm dev` を起動した状態で `PLAYWRIGHT_BASE_URL=http://127.0.0.1:3300 pnpm test:e2e` のように外部 URL を明示してください。
+
 ## 認証導線
 
 - `/login`

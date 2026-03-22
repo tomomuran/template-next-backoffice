@@ -2,18 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Settings, Users } from "lucide-react";
-import { Kanban, CalendarDots } from "@phosphor-icons/react";
+import { SquaresFour, Gear, Users, Kanban, CalendarDots } from "@phosphor-icons/react";
 import { SidebarNav, SidebarSection } from "@/components/ui/sidebar";
 import { primarySampleFeature } from "@/lib/sample-features";
 import { cn } from "@/lib/utils";
 
 const items = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Dashboard", icon: SquaresFour },
   { href: primarySampleFeature.href, label: primarySampleFeature.label, icon: Users },
   { href: "/kanban-demo", label: "Kanban", icon: Kanban },
   { href: "/calendar-demo", label: "Calendar", icon: CalendarDots },
-  { href: "/account", label: "Account", icon: Settings }
+  { href: "/account", label: "Account", icon: Gear }
 ] as const;
 
 export function AppSidebar() {

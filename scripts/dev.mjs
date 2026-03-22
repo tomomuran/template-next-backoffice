@@ -1,7 +1,7 @@
 import { execSync } from "node:child_process";
-import { ports, urls } from "./port-config.mjs";
+import { ports, urls, slot } from "./port-config.mjs";
 
-console.log(`Starting dev server on port ${ports.app} (slot ${process.env.PROJECT_SLOT ?? 33})`);
+console.log(`Starting dev server on port ${ports.app} (slot ${slot})`);
 console.log(`App:     ${urls.app}`);
 console.log(`Supabase: ${urls.supabaseApi}`);
 

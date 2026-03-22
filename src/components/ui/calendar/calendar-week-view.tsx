@@ -25,6 +25,7 @@ export function CalendarWeekView({
   colorMap,
   onSlotClick,
   onEventClick,
+  renderTimeEvent,
 }: CalendarWeekViewProps) {
   const days = useMemo(() => getWeekDays(currentDate), [currentDate]);
 
@@ -37,6 +38,7 @@ export function CalendarWeekView({
       colorMap={colorMap}
       onSlotClick={onSlotClick}
       onEventClick={onEventClick}
+      renderTimeEvent={renderTimeEvent}
     />
   );
 }

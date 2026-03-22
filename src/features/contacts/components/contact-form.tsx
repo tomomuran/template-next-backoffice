@@ -42,11 +42,18 @@ export function ContactForm({ mode, defaultValues, submitAction }: ContactFormPr
 
   const onSubmit = form.handleSubmit((values) => {
     startTransition(async () => {
-      await submitAction(values);
-      toast.success(mode === "create" ? "contact を作成しました" : "contact を更新しました");
+      form.clearErrors("root");
 
-      router.push("/contacts");
-      router.refresh();
+      try {
+        await submitAction(values);
+        toast.success(mode === "create" ? "contact を作成しました" : "contact を更新しました");
+        router.push("/contacts");
+        router.refresh();
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "contact の保存に失敗しました";
+        form.setError("root.serverError", { type: "server", message });
+        toast.error(message);
+      }
     });
   });
 
@@ -91,6 +98,9 @@ export function ContactForm({ mode, defaultValues, submitAction }: ContactFormPr
           <FormField htmlFor="contact-notes" label="メモ" error={form.formState.errors.notes?.message}>
             <Textarea id="contact-notes" {...form.register("notes")} />
           </FormField>
+          {form.formState.errors.root?.serverError?.message ? (
+            <p className="text-sm text-red-600">{form.formState.errors.root.serverError.message}</p>
+          ) : null}
           <div className="flex justify-end gap-2">
             <Button
               type="button"

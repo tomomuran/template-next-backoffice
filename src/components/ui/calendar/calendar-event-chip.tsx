@@ -18,7 +18,10 @@ export function CalendarEventChip({ event, colorMap, onClick }: CalendarEventChi
   return (
     <button
       type="button"
-      onClick={() => onClick?.(event)}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick?.(event);
+      }}
       className={cn(
         "w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium leading-tight border transition-opacity hover:opacity-80",
         colors.bg,

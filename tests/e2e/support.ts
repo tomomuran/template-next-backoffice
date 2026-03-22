@@ -9,5 +9,5 @@ export async function signInAsAdmin(page: Page) {
   await page.getByLabel("Email").fill("admin@example.com");
   await page.getByLabel("Password").fill("ChangeMe123!");
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page).toHaveURL(/\/dashboard$/);
+  await expect(page).toHaveURL(/\/dashboard$/, { timeout: 15_000 });
 }

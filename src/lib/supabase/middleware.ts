@@ -2,6 +2,12 @@ import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 import { getPublicEnv, getSupabasePublishableKey } from "@/lib/env/schema";
 
+type SupabaseCookieToSet = {
+  name: string;
+  value: string;
+  options: Record<string, unknown>;
+};
+
 export async function createSupabaseMiddlewareClient(request: NextRequest) {
   const env = getPublicEnv();
   const publishableKey = getSupabasePublishableKey();
@@ -9,21 +15,21 @@ export async function createSupabaseMiddlewareClient(request: NextRequest) {
 
   const supabase = createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, publishableKey, {
     cookies: {
-      get(name: string) {
-        return request.cookies.get(name)?.value;
+      getAll() {
+        return request.cookies.getAll();
       },
-      set(name: string, value: string, options: Record<string, unknown>) {
-        request.cookies.set(name, value);
+      setAll(cookiesToSet: SupabaseCookieToSet[]) {
+        cookiesToSet.forEach(({ name, value }: SupabaseCookieToSet) => request.cookies.set(name, value));
         response = NextResponse.next({ request });
-        response.cookies.set(name, value, options);
-      },
-      remove(name: string, options: Record<string, unknown>) {
-        request.cookies.set(name, "");
-        response = NextResponse.next({ request });
-        response.cookies.set(name, "", { ...options, maxAge: 0 });
+        cookiesToSet.forEach(({ name, value, options }: SupabaseCookieToSet) => response.cookies.set(name, value, options));
       }
     }
   });
 
   return { supabase, response };
+}
+
+export function applyResponseCookies(source: NextResponse, target: NextResponse) {
+  source.cookies.getAll().forEach((cookie) => target.cookies.set(cookie));
+  return target;
 }
