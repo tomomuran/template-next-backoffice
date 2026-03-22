@@ -1,0 +1,13 @@
+.next
+node_modules
+.env
+.env.local
+.env.production
+.env.test
+coverage
+playwright-report
+test-results
+.vercel
+supabase/.branches
+supabase/.temp
+.supabase-runtime
