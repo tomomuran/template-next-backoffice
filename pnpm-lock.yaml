@@ -23,6 +23,21 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.1.1
         version: 1.2.4(@types/react@19.2.14)(react@19.2.4)
+      '@schedule-x/calendar':
+        specifier: ^4.3.1
+        version: 4.3.1(@preact/signals@2.8.2(preact@10.29.0))(preact@10.29.0)(temporal-polyfill@0.3.2)
+      '@schedule-x/calendar-controls':
+        specifier: ^4.3.1
+        version: 4.3.1
+      '@schedule-x/events-service':
+        specifier: ^4.3.1
+        version: 4.3.1
+      '@schedule-x/react':
+        specifier: ^4.1.0
+        version: 4.1.0(@schedule-x/calendar@4.3.1(@preact/signals@2.8.2(preact@10.29.0))(preact@10.29.0)(temporal-polyfill@0.3.2))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@schedule-x/theme-shadcn':
+        specifier: ^4.3.1
+        version: 4.3.1
       '@sentry/nextjs':
         specifier: ^9.14.0
         version: 9.47.1(@opentelemetry/context-async-hooks@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/core@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(next@15.5.14(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(webpack@5.105.4)
@@ -68,6 +83,9 @@ importers:
       tailwindcss:
         specifier: ^4.1.1
         version: 4.2.2
+      temporal-polyfill:
+        specifier: ^0.3.2
+        version: 0.3.2
       zod:
         specifier: ^3.24.2
         version: 3.25.76
@@ -856,6 +874,11 @@ packages:
   '@preact/signals-core@1.14.0':
     resolution: {integrity: sha512-AowtCcCU/33lFlh1zRFf/u+12rfrhtNakj7UpaGEsmMwUKpKWMVvcktOGcwBBNiB4lWrZWc01LhiyyzVklJyaQ==}
 
+  '@preact/signals@2.8.2':
+    resolution: {integrity: sha512-gym5yoa64c+0w2kL7zRAAjY548qzWXbbuOfjsK9F1nWrEqooDwyWnih5SNdonjhQSp27zUqYh7UrxIRnkCyFCA==}
+    peerDependencies:
+      preact: '>= 10.25.0 || >=11.0.0-0'
+
   '@prisma/instrumentation@6.11.1':
     resolution: {integrity: sha512-mrZOev24EDhnefmnZX7WVVT7v+r9LttPRqf54ONvj6re4XMF7wFTpK2tLJi4XHB7fFp/6xhYbgRel8YV7gQiyA==}
     peerDependencies:
@@ -1064,6 +1087,29 @@ packages:
 
   '@rushstack/eslint-patch@1.16.1':
     resolution: {integrity: sha512-TvZbIpeKqGQQ7X0zSCvPH9riMSFQFSggnfBjFZ1mEoILW+UuXCKwOoPcgjMwiUtRqFZ8jWhPJc4um14vC6I4ag==}
+
+  '@schedule-x/calendar-controls@4.3.1':
+    resolution: {integrity: sha512-GkCwiXfIlwOBMZujbl1f6KVP1l/4W4T24shTU+QO7GN3LDXQWvrKbovMM1Wngu6HcfX7RGikCzuRfes4yzB8GQ==}
+
+  '@schedule-x/calendar@4.3.1':
+    resolution: {integrity: sha512-lArCIoRmTXLrJcq9VDKLfo1E3h8AwWLXvkEQt3o7rhc8qp9py4xfyjGMBP635eYzRoe3q9iaOS+WzglMz8EefQ==}
+    peerDependencies:
+      '@preact/signals': ^2.0.2
+      preact: ^10.19.2
+      temporal-polyfill: 0.3.0
+
+  '@schedule-x/events-service@4.3.1':
+    resolution: {integrity: sha512-jTdDraYe+F7nof6VRnF/GX3VJjl7CNUlfpMnZDQazgXlsRjiRHCiyxiyiw3LyOhpW0ssqIBkPWA/H+7qAF/BUQ==}
+
+  '@schedule-x/react@4.1.0':
+    resolution: {integrity: sha512-l2hn1kdTModk4Lbt+nEr/VAcuNMA+w+hAAtgz8VLOj5UeieM7PWoK+cDapzPHCjUKisCSPd8QZfAX966Ma82kQ==}
+    peerDependencies:
+      '@schedule-x/calendar': ^3.1.0 || ^4.0.0
+      react: ^16.7.0 || ^17 || ^18 || ^19
+      react-dom: ^16.7.0 || ^17 || ^18 || ^19
+
+  '@schedule-x/theme-shadcn@4.3.1':
+    resolution: {integrity: sha512-af8h9imJcBC4ctMlY47zJpeGFAzAnZDh7i1sCH0OwoaFEq96KLXOaokIRq4XF9OzfCNKgS6STJge+b8fPtiaAA==}
 
   '@sentry-internal/browser-utils@9.47.1':
     resolution: {integrity: sha512-twv6YhrUlPkvKz4/iQDH4KHgcv9t4cMjmZPf4/dCSCXn4/GOjzjx2d74c1w+1KOdS7lcsQzI+MtbK6SeYLiGfQ==}
@@ -2977,6 +3023,9 @@ packages:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
 
+  preact@10.29.0:
+    resolution: {integrity: sha512-wSAGyk2bYR1c7t3SZ3jHcM6xy0lcBcDel6lODcs9ME6Th++Dx2KU+6D3HD8wMMKGA8Wpw7OMd3/4RGzYRpzwRg==}
+
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -3281,6 +3330,12 @@ packages:
   tapable@2.3.0:
     resolution: {integrity: sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg==}
     engines: {node: '>=6'}
+
+  temporal-polyfill@0.3.2:
+    resolution: {integrity: sha512-TzHthD/heRK947GNiSu3Y5gSPpeUDH34+LESnfsq8bqpFhsB79HFBX8+Z834IVX68P3EUyRPZK5bL/1fh437Eg==}
+
+  temporal-spec@0.3.1:
+    resolution: {integrity: sha512-B4TUhezh9knfSIMwt7RVggApDRJZo73uZdj8AacL2mZ8RP5KtLianh2MXxL06GN9ESYiIsiuoLQhgVfwe55Yhw==}
 
   terser-webpack-plugin@5.4.0:
     resolution: {integrity: sha512-Bn5vxm48flOIfkdl5CaD2+1CiUVbonWQ3KQPyP7/EuIl9Gbzq/gQFOzaMFUEgVjB1396tcK0SG8XcNJ/2kDH8g==}
@@ -4294,6 +4349,11 @@ snapshots:
 
   '@preact/signals-core@1.14.0': {}
 
+  '@preact/signals@2.8.2(preact@10.29.0)':
+    dependencies:
+      '@preact/signals-core': 1.14.0
+      preact: 10.29.0
+
   '@prisma/instrumentation@6.11.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
@@ -4442,6 +4502,24 @@ snapshots:
   '@rtsao/scc@1.1.0': {}
 
   '@rushstack/eslint-patch@1.16.1': {}
+
+  '@schedule-x/calendar-controls@4.3.1': {}
+
+  '@schedule-x/calendar@4.3.1(@preact/signals@2.8.2(preact@10.29.0))(preact@10.29.0)(temporal-polyfill@0.3.2)':
+    dependencies:
+      '@preact/signals': 2.8.2(preact@10.29.0)
+      preact: 10.29.0
+      temporal-polyfill: 0.3.2
+
+  '@schedule-x/events-service@4.3.1': {}
+
+  '@schedule-x/react@4.1.0(@schedule-x/calendar@4.3.1(@preact/signals@2.8.2(preact@10.29.0))(preact@10.29.0)(temporal-polyfill@0.3.2))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+    dependencies:
+      '@schedule-x/calendar': 4.3.1(@preact/signals@2.8.2(preact@10.29.0))(preact@10.29.0)(temporal-polyfill@0.3.2)
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+
+  '@schedule-x/theme-shadcn@4.3.1': {}
 
   '@sentry-internal/browser-utils@9.47.1':
     dependencies:
@@ -6565,6 +6643,8 @@ snapshots:
     dependencies:
       xtend: 4.0.2
 
+  preact@10.29.0: {}
+
   prelude-ls@1.2.1: {}
 
   prettier@3.8.1: {}
@@ -6962,6 +7042,12 @@ snapshots:
   tailwindcss@4.2.2: {}
 
   tapable@2.3.0: {}
+
+  temporal-polyfill@0.3.2:
+    dependencies:
+      temporal-spec: 0.3.1
+
+  temporal-spec@0.3.1: {}
 
   terser-webpack-plugin@5.4.0(webpack@5.105.4):
     dependencies:
