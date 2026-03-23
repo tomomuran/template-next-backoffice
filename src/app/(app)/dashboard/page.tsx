@@ -21,7 +21,7 @@ export default async function DashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">飲食店サンプル -- 売上・来客状況</p>
+        <p className="text-sm text-muted-foreground">飲食店サンプル｜売上・来客状況</p>
       </div>
 
       <DashboardGrid className="grid-cols-2 lg:grid-cols-4">
