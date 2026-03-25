@@ -11,6 +11,7 @@ export function KanbanBoard<TItem extends KanbanItem>({
   items,
   renderCard,
   onDragEnd,
+  onItemClick,
   onAddItem,
   emptyMessage,
 }: KanbanBoardProps<TItem>) {
@@ -81,7 +82,7 @@ export function KanbanBoard<TItem extends KanbanItem>({
               emptyMessage={emptyMessage}
             >
               {colItems.map((item) => (
-                <KanbanCard key={item.id} id={item.id}>
+                <KanbanCard key={item.id} id={item.id} onClick={onItemClick ? () => onItemClick(item) : undefined}>
                   {renderCard(item)}
                 </KanbanCard>
               ))}

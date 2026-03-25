@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Buildings, MapPin, CurrencyJpy } from "@phosphor-icons/react";
+import { Buildings, MapPin, CurrencyJpy, Tag, Ruler } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/badge";
 import { KanbanBoard } from "@/components/ui/kanban-board";
 import type { KanbanColumnDefinition, KanbanItem, KanbanDragEndEvent } from "@/components/ui/kanban-types";
+import { SidePanel, SidePanelHeader, SidePanelTitle, SidePanelContent } from "@/components/ui/side-panel";
 
 type PropertyStatus = "vacant" | "viewing_booked" | "viewed" | "applied" | "contracted";
 
@@ -24,6 +25,14 @@ const columns: KanbanColumnDefinition<PropertyStatus>[] = [
   { id: "contracted", label: "契約完了", accentColor: "bg-emerald-500" },
 ];
 
+const statusLabels: Record<PropertyStatus, string> = {
+  vacant: "空室",
+  viewing_booked: "内覧予約",
+  viewed: "内覧済み",
+  applied: "申込",
+  contracted: "契約完了",
+};
+
 const initialProperties: Property[] = [
   { id: "1", status: "vacant", name: "パークハイツ渋谷 301", address: "渋谷区神南1-2-3", rent: "¥128,000", type: "1LDK", rooms: "35m2" },
   { id: "2", status: "vacant", name: "メゾン代官山 502", address: "渋谷区代官山町4-5", rent: "¥185,000", type: "2LDK", rooms: "52m2" },
@@ -39,12 +48,15 @@ const initialProperties: Property[] = [
 
 export function KanbanDemo() {
   const [properties, setProperties] = useState<Property[]>(initialProperties);
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
 
   const handleDragEnd = useCallback((event: KanbanDragEndEvent<Property>) => {
     setProperties((prev) =>
       prev.map((p) => (p.id === event.item.id ? { ...p, status: event.toStatus } : p))
     );
   }, []);
+
+  const handleClose = useCallback(() => setSelectedProperty(null), []);
 
   const renderCard = useCallback((property: Property) => (
     <div className="space-y-2">
@@ -70,11 +82,64 @@ export function KanbanDemo() {
   ), []);
 
   return (
-    <KanbanBoard
-      columns={columns}
-      items={properties}
-      renderCard={renderCard}
-      onDragEnd={handleDragEnd}
-    />
+    <>
+      <KanbanBoard
+        columns={columns}
+        items={properties}
+        renderCard={renderCard}
+        onDragEnd={handleDragEnd}
+        onItemClick={setSelectedProperty}
+      />
+
+      <SidePanel open={!!selectedProperty} onClose={handleClose} ariaLabel="物件詳細">
+        <SidePanelHeader onClose={handleClose}>
+          <SidePanelTitle>物件詳細</SidePanelTitle>
+        </SidePanelHeader>
+        <SidePanelContent>
+          {selectedProperty && (
+            <div className="space-y-5">
+              <div className="space-y-1">
+                <h4 className="text-lg font-semibold">{selectedProperty.name}</h4>
+                <Badge>{statusLabels[selectedProperty.status]}</Badge>
+              </div>
+
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center gap-3">
+                  <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">所在地</p>
+                    <p className="font-medium">{selectedProperty.address}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <CurrencyJpy className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">賃料</p>
+                    <p className="font-medium">{selectedProperty.rent}/月</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Tag className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">間取り</p>
+                    <p className="font-medium">{selectedProperty.type}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Ruler className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">面積</p>
+                    <p className="font-medium">{selectedProperty.rooms}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </SidePanelContent>
+      </SidePanel>
+    </>
   );
 }

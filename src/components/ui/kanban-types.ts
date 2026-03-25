@@ -22,6 +22,7 @@ export interface KanbanBoardProps<TItem extends KanbanItem> {
   items: TItem[];
   renderCard: (item: TItem) => ReactNode;
   onDragEnd: (event: KanbanDragEndEvent<TItem>) => void | Promise<void>;
+  onItemClick?: (item: TItem) => void;
   onAddItem?: (status: TItem["status"]) => void;
   emptyMessage?: string;
 }
