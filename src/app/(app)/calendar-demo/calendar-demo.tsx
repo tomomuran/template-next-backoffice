@@ -2,6 +2,7 @@
 
 import "temporal-polyfill/global";
 import { Temporal } from "temporal-polyfill";
+import { useState, useCallback } from "react";
 import { useNextCalendarApp, ScheduleXCalendar } from "@schedule-x/react";
 import { type CalendarEvent, viewWeek, viewDay, viewMonthGrid } from "@schedule-x/calendar";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
@@ -9,6 +10,9 @@ import { createCalendarControlsPlugin } from "@schedule-x/calendar-controls";
 import "@schedule-x/theme-shadcn/dist/index.css";
 import { addDays, startOfWeek } from "date-fns";
 import { ja } from "date-fns/locale";
+import { Clock, User, Scissors, CalendarDots } from "@phosphor-icons/react";
+import { Badge } from "@/components/ui/badge";
+import { SidePanel, SidePanelHeader, SidePanelTitle, SidePanelContent } from "@/components/ui/side-panel";
 
 interface SlotDef {
   dayOffset: number;
@@ -77,6 +81,10 @@ function generateEvents(): CalendarEvent[] {
       start,
       end,
       calendarId: slot.staff,
+      _staff: slot.staff,
+      _service: slot.service,
+      _customer: slot.customer,
+      _duration: slot.duration,
     };
   });
 }
@@ -90,9 +98,26 @@ const staffColors: Record<string, { label: string; color: string }> = {
   yamada: { label: "山田", color: "#d97706" },
 };
 
+function formatTime(dt: Temporal.ZonedDateTime | Temporal.PlainDate): string {
+  if (dt instanceof Temporal.ZonedDateTime) {
+    return `${String(dt.hour).padStart(2, "0")}:${String(dt.minute).padStart(2, "0")}`;
+  }
+  return "";
+}
+
+function formatDate(dt: Temporal.ZonedDateTime | Temporal.PlainDate): string {
+  if (dt instanceof Temporal.ZonedDateTime) {
+    return `${dt.year}/${dt.month}/${dt.day}`;
+  }
+  return `${dt.year}/${dt.month}/${dt.day}`;
+}
+
 export function CalendarDemo() {
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const eventsService = createEventsServicePlugin();
   const calendarControls = createCalendarControlsPlugin();
+
+  const handleClose = useCallback(() => setSelectedEvent(null), []);
 
   const calendar = useNextCalendarApp(
     {
@@ -107,50 +132,34 @@ export function CalendarDemo() {
       },
       weekOptions: {
         gridHeight: 600,
-        nDays: 7,
-        eventWidth: 95,
+        nDays: 6,
+        eventWidth: 100,
       },
       calendars: {
         tanaka: {
           colorName: "tanaka",
           label: "田中",
-          lightColors: {
-            main: "#2563eb",
-            container: "#dbeafe",
-            onContainer: "#1e40af",
-          },
+          lightColors: { main: "#2563eb", container: "#dbeafe", onContainer: "#1e40af" },
         },
         suzuki: {
           colorName: "suzuki",
           label: "鈴木",
-          lightColors: {
-            main: "#059669",
-            container: "#d1fae5",
-            onContainer: "#065f46",
-          },
+          lightColors: { main: "#059669", container: "#d1fae5", onContainer: "#065f46" },
         },
         sato: {
           colorName: "sato",
           label: "佐藤",
-          lightColors: {
-            main: "#7c3aed",
-            container: "#ede9fe",
-            onContainer: "#5b21b6",
-          },
+          lightColors: { main: "#7c3aed", container: "#ede9fe", onContainer: "#5b21b6" },
         },
         yamada: {
           colorName: "yamada",
           label: "山田",
-          lightColors: {
-            main: "#d97706",
-            container: "#fef3c7",
-            onContainer: "#92400e",
-          },
+          lightColors: { main: "#d97706", container: "#fef3c7", onContainer: "#92400e" },
         },
       },
       callbacks: {
         onEventClick(event) {
-          console.log("Event clicked:", event);
+          setSelectedEvent(event);
         },
         onClickDateTime(dateTime) {
           console.log("Slot clicked:", dateTime.toString());
@@ -162,6 +171,8 @@ export function CalendarDemo() {
 
   if (!calendar) return null;
 
+  const staff = selectedEvent ? staffColors[selectedEvent._staff as string] : null;
+
   return (
     <div>
       <div className="mb-4 flex flex-wrap gap-4">
@@ -172,7 +183,66 @@ export function CalendarDemo() {
           </div>
         ))}
       </div>
-      <ScheduleXCalendar calendarApp={calendar} />
+      <div className="overflow-hidden rounded-xl border border-border">
+        <ScheduleXCalendar calendarApp={calendar} />
+      </div>
+
+      <SidePanel open={!!selectedEvent} onClose={handleClose} ariaLabel="予約詳細">
+        <SidePanelHeader onClose={handleClose}>
+          <SidePanelTitle>予約詳細</SidePanelTitle>
+        </SidePanelHeader>
+        <SidePanelContent>
+          {selectedEvent && (
+            <div className="space-y-5">
+              <div className="space-y-1">
+                <h4 className="text-lg font-semibold">{selectedEvent.title}</h4>
+                {staff && (
+                  <Badge style={{ backgroundColor: staff.color, color: "#fff" }}>
+                    {staff.label}
+                  </Badge>
+                )}
+              </div>
+
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center gap-3">
+                  <User className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">顧客</p>
+                    <p className="font-medium">{selectedEvent._customer as string}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Scissors className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">施術内容</p>
+                    <p className="font-medium">{selectedEvent._service as string}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <CalendarDots className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">日付</p>
+                    <p className="font-medium">{formatDate(selectedEvent.start)}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Clock className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">時間</p>
+                    <p className="font-medium">
+                      {formatTime(selectedEvent.start)} ~ {formatTime(selectedEvent.end)}
+                      <span className="ml-2 text-muted-foreground">({selectedEvent._duration as number}分)</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </SidePanelContent>
+      </SidePanel>
     </div>
   );
 }
