@@ -1,41 +1,50 @@
 import { TrendUp, TrendDown, Minus } from "@phosphor-icons/react/dist/ssr";
-import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { KpiCardProps } from "./types";
 
-export function KpiCard({ label, value, change, trend, icon: Icon, className }: KpiCardProps) {
+const trendConfig = {
+  up:   { icon: TrendUp,   style: "border-ok/20 bg-ok/8 text-ok", sign: "+" },
+  down: { icon: TrendDown,  style: "border-bad/20 bg-bad/8 text-bad", sign: "" },
+  flat: { icon: Minus,      style: "border-border bg-surface-2 text-muted-foreground", sign: "" },
+} as const;
+
+export function KpiCard({ label, value, change, trend, className }: KpiCardProps) {
   const resolvedTrend = trend ?? (change === undefined ? "flat" : change > 0 ? "up" : change < 0 ? "down" : "flat");
-
-  const trendConfig = {
-    up: { icon: TrendUp, color: "text-emerald-700 bg-emerald-50", sign: "+" },
-    down: { icon: TrendDown, color: "text-red-700 bg-red-50", sign: "" },
-    flat: { icon: Minus, color: "text-muted-foreground bg-muted", sign: "" },
-  }[resolvedTrend];
-
-  const TrendIcon = trendConfig.icon;
+  const config = trendConfig[resolvedTrend];
+  const TrendIcon = config.icon;
 
   return (
-    <Card className={cn("relative overflow-hidden", className)}>
-      <CardContent className="p-5">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-muted-foreground">{label}</span>
-          {Icon && (
-            <div className="rounded-lg bg-muted p-2">
-              <Icon className="h-4 w-4 text-muted-foreground" />
-            </div>
-          )}
-        </div>
-        <div className="mt-2 text-2xl font-bold tracking-tight">{value}</div>
+    <div className={cn("flex min-h-[108px] flex-col gap-2.5 px-5 py-4", className)}>
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-medium uppercase tracking-[0.04em] text-muted-foreground">
+          {label}
+        </span>
         {change !== undefined && (
-          <div className="mt-2 flex items-center gap-1.5">
-            <span className={cn("inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-xs font-medium", trendConfig.color)}>
-              <TrendIcon className="h-3 w-3" />
-              {trendConfig.sign}{Math.abs(change).toFixed(1)}%
-            </span>
-            <span className="text-xs text-muted-foreground">前月比</span>
-          </div>
+          <span
+            className={cn(
+              "inline-flex items-center gap-1 rounded border px-1.5 py-0.5 text-xs font-medium",
+              config.style
+            )}
+          >
+            <TrendIcon className="h-2.5 w-2.5" />
+            {config.sign}{Math.abs(change).toFixed(1)}%
+          </span>
         )}
-      </CardContent>
-    </Card>
+      </div>
+      <div className="flex items-end justify-between">
+        <div className="text-[27px] font-medium leading-none tracking-[-0.025em]">
+          {value}
+        </div>
+        {/* Sparkline placeholder - rendered inline via SVG in the page */}
+      </div>
+    </div>
+  );
+}
+
+export function KpiStrip({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="grid grid-cols-2 border-b border-border lg:grid-cols-4 [&>*:not(:last-child)]:border-r [&>*:not(:last-child)]:border-border">
+      {children}
+    </div>
   );
 }

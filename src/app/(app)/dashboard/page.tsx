@@ -1,9 +1,23 @@
-import { Suspense } from "react";
-import dynamic from "next/dynamic";
-import { CurrencyJpy, Users, Receipt, ArrowsClockwise } from "@phosphor-icons/react/dist/ssr";
+import Link from "next/link";
+import { DownloadSimple, Plus } from "@phosphor-icons/react/dist/ssr";
 import { requireAuthenticatedUser } from "@/lib/auth/require-user";
-import { KpiCard } from "@/components/dashboard/kpi-card";
-import { DashboardGrid } from "@/components/dashboard/dashboard-grid";
+import { primarySampleFeature } from "@/lib/sample-features";
+
+function formatToday(): string {
+  const fmt = new Intl.DateTimeFormat("ja-JP", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    weekday: "short",
+  });
+  const parts = fmt.formatToParts(new Date());
+  const get = (t: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === t)?.value ?? "";
+  return `${get("year")}-${get("month")}-${get("day")} / ${get("weekday")} / JST`;
+}
+import { KpiCard, KpiStrip } from "@/components/dashboard/kpi-card";
+import { Button } from "@/components/ui/button";
+import { DashboardChartsLoader } from "./dashboard-charts-loader";
 import {
   kpiData,
   monthlySalesData,
@@ -12,51 +26,56 @@ import {
   topMenuItems,
 } from "./_data/sample-data";
 
-const DashboardCharts = dynamic(() => import("./dashboard-charts").then((mod) => mod.DashboardCharts), {
-  ssr: false
-});
-
-const kpiIcons = [CurrencyJpy, Users, Receipt, ArrowsClockwise];
-
-function ChartsSkeleton() {
-  return (
-    <div className="space-y-4">
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="h-72 animate-pulse rounded-lg border border-border bg-muted/50" />
-        <div className="h-72 animate-pulse rounded-lg border border-border bg-muted/50" style={{ animationDelay: "100ms" }} />
-      </div>
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="h-72 animate-pulse rounded-lg border border-border bg-muted/50" style={{ animationDelay: "200ms" }} />
-        <div className="h-72 animate-pulse rounded-lg border border-border bg-muted/50" style={{ animationDelay: "300ms" }} />
-      </div>
-    </div>
-  );
-}
-
 export default async function DashboardPage() {
   await requireAuthenticatedUser();
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">飲食店サンプル｜売上・来客状況</p>
+    <div>
+      {/* Header strip */}
+      <div className="border-b border-border px-5 pb-3.5 pt-4.5">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <div className="font-[family-name:var(--font-jetbrains-mono)] text-xs tracking-[0.04em] text-muted-foreground">
+              {formatToday()}
+            </div>
+            <h1 className="mt-1 text-[23px] font-semibold tracking-[-0.022em]">
+              Dashboard
+            </h1>
+            <p className="mt-0.5 text-[13.5px] text-muted-foreground">
+              飲食店サンプル / 売上と来客の概況。
+              <span className="text-foreground">3月は前年比 +21.1%</span> で好調です。
+            </p>
+          </div>
+          <div className="flex gap-1.5">
+            {/* TODO: Export機能を実装 */}
+            <Button variant="outline" size="sm" disabled>
+              <DownloadSimple className="h-3.5 w-3.5" />
+              Export
+            </Button>
+            <Button size="sm" asChild>
+              <Link href={primarySampleFeature.newHref}>
+                <Plus className="h-3.5 w-3.5" />
+                New {primarySampleFeature.singularLabel}
+              </Link>
+            </Button>
+          </div>
+        </div>
       </div>
 
-      <DashboardGrid className="grid-cols-2 lg:grid-cols-4">
-        {kpiData.map((kpi, i) => (
-          <KpiCard key={kpi.label} {...kpi} icon={kpiIcons[i]} />
+      {/* KPI Strip */}
+      <KpiStrip>
+        {kpiData.map((kpi) => (
+          <KpiCard key={kpi.label} {...kpi} />
         ))}
-      </DashboardGrid>
+      </KpiStrip>
 
-      <Suspense fallback={<ChartsSkeleton />}>
-        <DashboardCharts
-          monthlySalesData={monthlySalesData}
-          dailyVisitorsData={dailyVisitorsData}
-          categorySalesData={categorySalesData}
-          topMenuItems={topMenuItems}
-        />
-      </Suspense>
+      {/* Charts */}
+      <DashboardChartsLoader
+        monthlySalesData={monthlySalesData}
+        dailyVisitorsData={dailyVisitorsData}
+        categorySalesData={categorySalesData}
+        topMenuItems={topMenuItems}
+      />
     </div>
   );
 }
