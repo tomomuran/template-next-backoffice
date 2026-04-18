@@ -77,7 +77,7 @@ export async function getUserById(userId: string): Promise<UserRecord | null> {
 
 export async function inviteUser(values: InviteUserFormValues) {
   const parsed = inviteUserSchema.parse(values);
-  const { user } = await requireAuthenticatedUser();
+  const { user, supabase } = await requireAuthenticatedUser();
   const serviceRole = createServiceRoleClient();
   const env = getPublicEnv();
 
@@ -105,7 +105,6 @@ export async function inviteUser(values: InviteUserFormValues) {
     throw new Error(`ユーザープロフィールの作成に失敗しました: ${profileError.message}`);
   }
 
-  const { supabase } = await requireAuthenticatedUser();
   await recordAuditLog(supabase, {
     actor: user.id,
     action: "invite",

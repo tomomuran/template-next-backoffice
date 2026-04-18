@@ -1,9 +1,14 @@
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isAppRole, isUserStatus, type UserProfile } from "@/lib/auth/roles";
 
-export async function requireAuthenticatedUser() {
-  const supabase = await createSupabaseServerClient();
+const getSupabaseServerClient = cache(async () => {
+  return createSupabaseServerClient();
+});
+
+export const requireAuthenticatedUser = cache(async () => {
+  const supabase = await getSupabaseServerClient();
   const {
     data: { user }
   } = await supabase.auth.getUser();
@@ -13,9 +18,9 @@ export async function requireAuthenticatedUser() {
   }
 
   return { user, supabase };
-}
+});
 
-export async function getCurrentUserProfile(): Promise<UserProfile | null> {
+export const getCurrentUserProfile = cache(async (): Promise<UserProfile | null> => {
   const { user, supabase } = await requireAuthenticatedUser();
   const { data, error } = await supabase
     .from("user_profiles")
@@ -32,7 +37,7 @@ export async function getCurrentUserProfile(): Promise<UserProfile | null> {
   }
 
   return data;
-}
+});
 
 export async function requireRole(allowedRoles: UserProfile["role"][]) {
   const profile = await getCurrentUserProfile();
