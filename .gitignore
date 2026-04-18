@@ -12,3 +12,6 @@ test-results
 supabase/.branches
 supabase/.temp
 .supabase-runtime
+.DS_Store
+.claude/settings.local.json
+.serena/
