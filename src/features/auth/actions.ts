@@ -20,10 +20,23 @@ export async function signInWithPasswordAction(values: {
   password: string;
 }): Promise<AuthActionResult> {
   const supabase = await createSupabaseServerActionClient();
-  const { error } = await supabase.auth.signInWithPassword(values);
+  const { error, data } = await supabase.auth.signInWithPassword(values);
 
   if (error) {
     return { error: error.message };
+  }
+
+  if (data.user) {
+    const { data: profile } = await supabase
+      .from("user_profiles")
+      .select("status")
+      .eq("id", data.user.id)
+      .maybeSingle();
+
+    if (profile?.status === "suspended") {
+      await supabase.auth.signOut();
+      return { error: "このアカウントは停止されています。管理者にお問い合わせください。" };
+    }
   }
 
   return {};
@@ -71,10 +84,25 @@ export async function requestPasswordResetAction(email: string): Promise<AuthAct
 
 export async function updatePasswordAction(password: string): Promise<AuthActionResult> {
   const supabase = await createSupabaseServerActionClient();
-  const { error } = await supabase.auth.updateUser({ password });
+  const { error, data } = await supabase.auth.updateUser({ password });
 
   if (error) {
     return { error: error.message };
+  }
+
+  if (data.user) {
+    const { data: profile } = await supabase
+      .from("user_profiles")
+      .select("status")
+      .eq("id", data.user.id)
+      .maybeSingle();
+
+    if (profile?.status === "invited") {
+      await supabase
+        .from("user_profiles")
+        .update({ status: "active", updated_by: data.user.id })
+        .eq("id", data.user.id);
+    }
   }
 
   revalidatePath("/", "layout");
