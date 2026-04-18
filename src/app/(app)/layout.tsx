@@ -14,7 +14,7 @@ export default async function AppLayout({ children }: Readonly<{ children: React
 
   return (
     <AuthProvider profile={profile}>
-      <AppShell profile={profile}>{children}</AppShell>
+      <AppShell>{children}</AppShell>
     </AuthProvider>
   );
 }

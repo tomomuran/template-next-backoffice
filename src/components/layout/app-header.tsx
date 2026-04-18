@@ -1,32 +1,23 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { signOutAction } from "@/features/auth/actions";
-import type { UserProfile } from "@/lib/auth/roles";
-import { primarySampleFeature } from "@/lib/sample-features";
+import type { ReactNode } from "react";
 
-interface AppHeaderProps {
-  profile: UserProfile | null;
+interface PageHeaderProps {
+  title: string;
+  description?: string;
+  actions?: ReactNode;
 }
 
-export function AppHeader({ profile }: AppHeaderProps) {
+export function PageHeader({ title, description, actions }: PageHeaderProps) {
   return (
-    <header className="border-b border-border bg-background px-4 py-4 md:px-8">
-      <div className="flex items-center justify-between gap-4">
+    <div className="border-b border-border px-5 py-3.5">
+      <div className="flex items-end justify-between gap-4">
         <div>
-          <p className="text-sm text-muted-foreground">Next.js Backoffice Template</p>
-          <h1 className="text-lg font-semibold">{profile?.display_name ?? "Invited User"}</h1>
+          <h1 className="text-[21px] font-semibold tracking-[-0.022em]">{title}</h1>
+          {description && (
+            <p className="mt-0.5 text-[13px] text-muted-foreground">{description}</p>
+          )}
         </div>
-        <div className="flex items-center gap-2">
-          <Button asChild variant="outline">
-            <Link href={primarySampleFeature.newHref}>New {primarySampleFeature.singularLabel}</Link>
-          </Button>
-          <form action={signOutAction}>
-            <Button type="submit" variant="ghost">
-              Sign out
-            </Button>
-          </form>
-        </div>
+        {actions && <div className="flex items-center gap-1.5">{actions}</div>}
       </div>
-    </header>
+    </div>
   );
 }
