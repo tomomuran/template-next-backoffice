@@ -110,75 +110,65 @@ export function DataTable<T>({
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 rounded-lg border border-border bg-background p-4 lg:flex-row lg:items-end lg:justify-between">
-        <div className="grid gap-3 md:grid-cols-[minmax(0,1.2fr)_repeat(auto-fit,minmax(180px,1fr))] md:items-end">
-          <div className="space-y-2">
-            <label className="text-sm font-medium" htmlFor={searchId}>
-              {searchLabel}
-            </label>
-            <div className="relative">
-              <MagnifyingGlass className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                id={searchId}
-                className="pl-9"
-                placeholder={searchPlaceholder}
-                value={searchQuery}
-                onChange={(event) => {
-                  setSearchQuery(event.target.value);
-                  setPage(1);
-                }}
-              />
-            </div>
-          </div>
-
-          {filters.map((filter) => (
-            <div className="space-y-2" key={filter.key}>
-              <label className="text-sm font-medium" htmlFor={`${searchId}-${filter.key}`}>
-                {filter.label}
-              </label>
-              <select
-                id={`${searchId}-${filter.key}`}
-                className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm shadow-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
-                value={activeFilters[filter.key] ?? filter.defaultValue ?? ""}
-                onChange={(event) => updateFilter(filter.key, event.target.value)}
-              >
-                <option value="">{filter.allLabel ?? "すべて"}</option>
-                {filter.options.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <label className="text-sm text-muted-foreground" htmlFor={`${searchId}-page-size`}>
-            表示件数
-          </label>
-          <select
-            id={`${searchId}-page-size`}
-            className="flex h-10 rounded-md border border-border bg-background px-3 py-2 text-sm shadow-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
-            value={String(pageSize)}
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center gap-2 border-b border-border bg-background px-3.5 py-2">
+        <div className="flex h-7 min-w-0 flex-[1_0_180px] items-center gap-1.5 rounded-md border border-border bg-surface-2 px-2 md:flex-[0_0_260px]">
+          <MagnifyingGlass className="h-3.5 w-3.5 text-muted-foreground" />
+          <label htmlFor={searchId} className="sr-only">{searchLabel}</label>
+          <input
+            id={searchId}
+            placeholder={searchPlaceholder}
+            value={searchQuery}
             onChange={(event) => {
-              setPageSize(Number(event.target.value));
+              setSearchQuery(event.target.value);
               setPage(1);
             }}
-          >
-            {pageSizeOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-
-          <Button type="button" variant="outline" onClick={downloadCsv}>
-            <DownloadSimple className="mr-2 h-4 w-4" />
-            CSV Export
-          </Button>
+            className="flex-1 border-none bg-transparent text-[13.5px] text-foreground outline-none placeholder:text-muted-foreground"
+          />
         </div>
+
+        {filters.map((filter) => (
+          <div key={filter.key}>
+            <label htmlFor={`${searchId}-${filter.key}`} className="sr-only">{filter.label}</label>
+            <select
+              id={`${searchId}-${filter.key}`}
+              className="flex h-7 rounded-md border border-border bg-background px-2 text-[13px] text-foreground outline-none"
+              value={activeFilters[filter.key] ?? filter.defaultValue ?? ""}
+              onChange={(event) => updateFilter(filter.key, event.target.value)}
+            >
+              <option value="">{filter.allLabel ?? `All ${filter.label}`}</option>
+              {filter.options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        ))}
+
+        <div className="flex-1" />
+
+        <label htmlFor={`${searchId}-page-size`} className="sr-only">表示件数</label>
+        <select
+          id={`${searchId}-page-size`}
+          className="flex h-7 rounded-md border border-border bg-background px-2 text-[13px] text-muted-foreground outline-none"
+          value={String(pageSize)}
+          onChange={(event) => {
+            setPageSize(Number(event.target.value));
+            setPage(1);
+          }}
+        >
+          {pageSizeOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}件
+            </option>
+          ))}
+        </select>
+
+        <Button type="button" variant="outline" size="sm" onClick={downloadCsv}>
+          <DownloadSimple className="h-3.5 w-3.5" />
+          CSV
+        </Button>
       </div>
 
       {!hasRows ? (
