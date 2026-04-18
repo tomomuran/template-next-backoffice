@@ -3,7 +3,7 @@
 import type { ComponentType } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SquaresFour, Gear, Users, Kanban, CalendarDots, ClockCounterClockwise } from "@phosphor-icons/react";
+import { SquaresFour, Gear, Users, UsersThree, Kanban, CalendarDots, ClockCounterClockwise } from "@phosphor-icons/react";
 import { useCurrentUser } from "@/components/providers/auth-provider";
 import { SidebarNav, SidebarSection } from "@/components/ui/sidebar";
 import { primarySampleFeature } from "@/lib/sample-features";
@@ -22,7 +22,10 @@ const items: NavItem[] = [
   { href: "/calendar-demo", label: "Calendar", icon: CalendarDots }
 ];
 
-const adminItems: NavItem[] = [{ href: "/audit-logs", label: "Audit Logs", icon: ClockCounterClockwise }];
+const adminItems: NavItem[] = [
+  { href: "/users", label: "Users", icon: UsersThree },
+  { href: "/audit-logs", label: "Audit Logs", icon: ClockCounterClockwise }
+];
 
 const bottomItems: NavItem[] = [{ href: "/account", label: "Account", icon: Gear }];
 
