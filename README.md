@@ -108,7 +108,3 @@ pnpm dev          # http://127.0.0.1:3300
 
 - `NEXT_PUBLIC_SENTRY_DSN` / `SENTRY_DSN` を設定するとSentryが有効になります
 - `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=true` でVercel Analyticsを有効化できます
-
-## License
-
-Private
