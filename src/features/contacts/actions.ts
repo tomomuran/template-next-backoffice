@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { requireRole } from "@/lib/auth/require-user";
 import { createContact, softDeleteContact, updateContact } from "@/features/contacts/services/contacts-service";
 import { type ContactFormValues } from "@/features/contacts/services/schemas";
 
@@ -17,11 +18,13 @@ export async function updateContactAction(contactId: string, values: ContactForm
 }
 
 export async function deleteContactAction(contactId: string) {
+  await requireRole(["admin"]);
   await softDeleteContact(contactId);
   revalidatePath("/contacts");
 }
 
 export async function deleteContactAndRedirectAction(contactId: string) {
+  await requireRole(["admin"]);
   await softDeleteContact(contactId);
   revalidatePath("/contacts");
   redirect("/contacts");

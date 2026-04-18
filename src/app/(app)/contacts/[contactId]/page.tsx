@@ -2,8 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { deleteContactAndRedirectAction } from "@/features/contacts/actions";
+import { DeleteContactButton } from "@/features/contacts/components/delete-contact-button";
 import { getContactById } from "@/features/contacts/services/contacts-service";
+import { getCurrentUserProfile } from "@/lib/auth/require-user";
 
 interface ContactDetailPageProps {
   params: Promise<{
@@ -13,11 +14,13 @@ interface ContactDetailPageProps {
 
 export default async function ContactDetailPage({ params }: ContactDetailPageProps) {
   const { contactId } = await params;
-  const contact = await getContactById(contactId);
+  const [contact, profile] = await Promise.all([getContactById(contactId), getCurrentUserProfile()]);
 
   if (!contact) {
     notFound();
   }
+
+  const isAdmin = profile?.role === "admin";
 
   return (
     <div className="space-y-6">
@@ -32,11 +35,7 @@ export default async function ContactDetailPage({ params }: ContactDetailPagePro
           <Button asChild variant="outline">
             <Link href={`/contacts/${contact.id}/edit`}>Edit</Link>
           </Button>
-          <form action={deleteContactAndRedirectAction.bind(null, contact.id)}>
-            <Button type="submit" variant="destructive">
-              Delete
-            </Button>
-          </form>
+          {isAdmin && <DeleteContactButton contactId={contact.id} />}
         </div>
       </div>
       <Card>
