@@ -7,12 +7,20 @@ export default async function AuditLogsPage() {
   const logs = await listAuditLogs();
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Audit Logs</h1>
-        <p className="text-sm text-muted-foreground">システム操作の履歴を確認できます</p>
+    <div>
+      <div className="border-b border-border px-5 py-3.5">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <h1 className="text-[21px] font-semibold tracking-[-0.022em]">Audit log</h1>
+            <p className="mt-0.5 text-[13px] text-muted-foreground">
+              システム操作の履歴 / 直近 30 日
+            </p>
+          </div>
+        </div>
       </div>
-      <AuditLogTable logs={logs} />
+      <div className="p-5">
+        <AuditLogTable logs={logs} />
+      </div>
     </div>
   );
 }

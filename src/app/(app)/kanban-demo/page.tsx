@@ -5,12 +5,14 @@ export default async function KanbanDemoPage() {
   await requireAuthenticatedUser();
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Kanban Board</h1>
-        <p className="text-sm text-muted-foreground">不動産サンプル｜物件パイプライン</p>
+    <div>
+      <div className="border-b border-border px-5 py-3.5">
+        <h1 className="text-[21px] font-semibold tracking-[-0.022em]">Tasks</h1>
+        <p className="mt-0.5 text-[13px] text-muted-foreground">運営タスク / カンバンビュー</p>
       </div>
-      <KanbanDemo />
+      <div className="p-5">
+        <KanbanDemo />
+      </div>
     </div>
   );
 }

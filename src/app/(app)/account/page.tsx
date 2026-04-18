@@ -7,20 +7,24 @@ export default async function AccountPage() {
   const profile = await getCurrentUserProfile();
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Account</h1>
-        <p className="text-sm text-muted-foreground">プロフィール管理</p>
+    <div>
+      <div className="border-b border-border px-5 py-3.5">
+        <h1 className="text-[21px] font-semibold tracking-[-0.022em]">Settings</h1>
+        <p className="mt-0.5 text-[13px] text-muted-foreground">
+          ワークスペースと個人設定
+        </p>
       </div>
-      <ProfileForm
-        defaultValues={{
-          displayName: profile?.display_name ?? ""
-        }}
-        email={user.email ?? ""}
-        role={profile?.role ?? "member"}
-        status={profile?.status ?? "invited"}
-        submitAction={updateProfileAction}
-      />
+      <div className="p-5">
+        <ProfileForm
+          defaultValues={{
+            displayName: profile?.display_name ?? ""
+          }}
+          email={user.email ?? ""}
+          role={profile?.role ?? "member"}
+          status={profile?.status ?? "invited"}
+          submitAction={updateProfileAction}
+        />
+      </div>
     </div>
   );
 }

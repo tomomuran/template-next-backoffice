@@ -8,15 +8,21 @@ export default async function UsersPage() {
   const users = await listUsers();
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
-          <p className="text-sm text-muted-foreground">ユーザーの招待・ロール・ステータスを管理</p>
+    <div>
+      <div className="border-b border-border px-5 py-3.5">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <h1 className="text-[21px] font-semibold tracking-[-0.022em]">Members</h1>
+            <p className="mt-0.5 text-[13px] text-muted-foreground">
+              ワークスペースのメンバー / ロール / ステータスを管理
+            </p>
+          </div>
+          <InviteUserDialog />
         </div>
-        <InviteUserDialog />
       </div>
-      <UsersTable users={users} />
+      <div className="p-5">
+        <UsersTable users={users} />
+      </div>
     </div>
   );
 }
