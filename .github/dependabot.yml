@@ -1,0 +1,17 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      timezone: "Asia/Tokyo"
+    # 通常の版上げPRは作らず、脆弱性修正(security updates)だけを受け取る。
+    # 0 で止まるのは version updates だけで、security updates は別枠で作られる
+    open-pull-requests-limit: 0
+    groups:
+      # 脆弱性修正は1本のPRにまとめる
+      security:
+        applies-to: security-updates
+        patterns:
+          - "*"
